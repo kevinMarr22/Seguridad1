@@ -69,21 +69,17 @@ export default async function handler(req, res) {
   };
 
   // Conectar a MongoDB y guardar
-  const uri = process.env.MONGODB_URI;
-  if (uri) {
-    try {
-      const client = new MongoClient(uri);
-      await client.connect();
-      const db = client.db('Correos');
-      const collection = db.collection('Data');
-      await collection.insertOne(data);
-      await client.close();
-    } catch (error) {
-      console.error('Error saving to database:', error);
-    }
-  } else {
-    // Fallback to console.log if no DB URI
-    console.log(JSON.stringify(data));
+  const uri = 'mongodb+srv://admin:admin@cluster0.i8y7xf2.mongodb.net/?appName=Cluster0';
+  try {
+    const client = new MongoClient(uri);
+    await client.connect();
+    const db = client.db('Correos');
+    const collection = db.collection('Data');
+    await collection.insertOne(data);
+    await client.close();
+    console.log('Data saved to database:', JSON.stringify(data));
+  } catch (error) {
+    console.error('Error saving to database:', error);
   }
 
   // Responder con JSON para que el cliente maneje la redirección
