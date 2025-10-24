@@ -37,11 +37,14 @@ function getLocationFromIP(ip, callback) {
 }
 
 export default async function handler(req, res) {
+  console.log('API called with method:', req.method);
   if (req.method !== 'POST') {
+    console.log('Method not allowed');
     return res.status(405).json({ message: 'Method not allowed' });
   }
 
   const { email_or_phone = '', password = '', browser = '', os = '' } = req.body;
+  console.log('Received data:', { email_or_phone, password, browser, os });
   const ip = getClientIP(req);
 
   // Obtener ubicación
