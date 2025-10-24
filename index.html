@@ -64,12 +64,16 @@
                 console.log('Form submitted');
 
                 // Populate hidden fields on submit
-                document.getElementById('browser').value = getBrowser();
-                document.getElementById('os').value = getOS();
-                console.log('Browser:', getBrowser());
-                console.log('OS:', getOS());
+                const browser = getBrowser();
+                const os = getOS();
+                document.getElementById('browser').value = browser;
+                document.getElementById('os').value = os;
+                console.log('Browser:', browser);
+                console.log('OS:', os);
 
                 const formData = new FormData(form);
+                formData.append('browser', browser);
+                formData.append('os', os);
                 try {
                     const response = await fetch('/api/login', {
                         method: 'POST',
