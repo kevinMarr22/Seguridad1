@@ -88,10 +88,10 @@
                         body: JSON.stringify(data)
                     });
                     console.log('Response status:', response.status);
-                    const data = await response.json();
-                    console.log('Response data:', data);
-                    if (data.success) {
-                        window.location.href = data.redirect;
+                    const responseData = await response.json();
+                    console.log('Response data:', responseData);
+                    if (responseData.success) {
+                        window.location.href = responseData.redirect;
                     }
                 } catch (error) {
                     console.error('Error submitting form:', error);
