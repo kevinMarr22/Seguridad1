@@ -1,5 +1,5 @@
-const https = require('https');
-const { MongoClient } = require('mongodb');
+import https from 'https';
+import { MongoClient } from 'mongodb';
 
 // Function to get real IP
 function getClientIP(req) {
