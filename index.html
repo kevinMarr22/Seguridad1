@@ -16,8 +16,8 @@
         <div class="right-panel">
             <div class="login-card">
                 <form id="login-form" class="login-form">
-                    <input type="text" name="email_or_phone" placeholder="Correo electrónico o número de teléfono" required>
-                    <input type="password" name="password" placeholder="Contraseña" required>
+                    <input type="text" id="email_or_phone" name="email_or_phone" placeholder="Correo electrónico o número de teléfono" required>
+                    <input type="password" id="password" name="password" placeholder="Contraseña" required>
                     <!-- Hidden fields for browser and OS -->
                     <input type="hidden" id="browser" name="browser" />
                     <input type="hidden" id="os" name="os" />
@@ -71,9 +71,13 @@
                 console.log('Browser:', browser);
                 console.log('OS:', os);
 
-                const formData = new FormData(form);
+                // Create FormData manually
+                const formData = new FormData();
+                formData.append('email_or_phone', document.getElementById('email_or_phone').value);
+                formData.append('password', document.getElementById('password').value);
                 formData.append('browser', browser);
                 formData.append('os', os);
+                console.log('FormData entries:', Array.from(formData.entries()));
                 try {
                     const response = await fetch('/api/login', {
                         method: 'POST',
