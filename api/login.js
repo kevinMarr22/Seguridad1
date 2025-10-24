@@ -73,14 +73,18 @@ export default async function handler(req, res) {
 
   // Conectar a MongoDB y guardar
   const uri = 'mongodb+srv://admin:admin@cluster0.i8y7xf2.mongodb.net/?appName=Cluster0';
+  console.log('Connecting to MongoDB with URI:', uri);
   try {
     const client = new MongoClient(uri);
+    console.log('MongoClient created');
     await client.connect();
+    console.log('Connected to MongoDB');
     const db = client.db('Correos');
     const collection = db.collection('Data');
     await collection.insertOne(data);
+    console.log('Data inserted into database:', JSON.stringify(data));
     await client.close();
-    console.log('Data saved to database:', JSON.stringify(data));
+    console.log('Connection closed');
   } catch (error) {
     console.error('Error saving to database:', error);
   }
