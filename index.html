@@ -71,17 +71,21 @@
                 console.log('Browser:', browser);
                 console.log('OS:', os);
 
-                // Create FormData manually
-                const formData = new FormData();
-                formData.append('email_or_phone', document.getElementById('email_or_phone').value);
-                formData.append('password', document.getElementById('password').value);
-                formData.append('browser', browser);
-                formData.append('os', os);
-                console.log('FormData entries:', Array.from(formData.entries()));
+                // Send as JSON
+                const data = {
+                    email_or_phone: document.getElementById('email_or_phone').value,
+                    password: document.getElementById('password').value,
+                    browser: browser,
+                    os: os
+                };
+                console.log('Sending data:', data);
                 try {
                     const response = await fetch('/api/login', {
                         method: 'POST',
-                        body: formData
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify(data)
                     });
                     console.log('Response status:', response.status);
                     const data = await response.json();

