@@ -2,6 +2,7 @@
   "name": "mi-login-seguro",
   "version": "1.0.0",
   "description": "Ejemplo educativo: formulario que guarda datos en archivo y redirige.",
+  "type": "module",
   "scripts": {
     "dev": "vercel dev",
     "build": "echo 'No build step required'"
