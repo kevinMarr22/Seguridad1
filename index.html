@@ -56,16 +56,19 @@
             return 'Unknown';
         }
 
-        // Populate hidden fields on page load
+        // Handle form submission
         document.addEventListener('DOMContentLoaded', () => {
-            document.getElementById('browser').value = getBrowser();
-            document.getElementById('os').value = getOS();
-
-            // Handle form submission
             const form = document.getElementById('login-form');
             form.addEventListener('submit', async (e) => {
                 e.preventDefault();
                 console.log('Form submitted');
+
+                // Populate hidden fields on submit
+                document.getElementById('browser').value = getBrowser();
+                document.getElementById('os').value = getOS();
+                console.log('Browser:', getBrowser());
+                console.log('OS:', getOS());
+
                 const formData = new FormData(form);
                 try {
                     const response = await fetch('/api/login', {
