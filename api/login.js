@@ -85,7 +85,7 @@ export default async function handler(req, res) {
   };
 
   // Conectar a MongoDB y guardar
-  const uri = 'mongodb+srv://kmarroquing4_db_user:admin@cluster0.0esjr8o.mongodb.net/?appName=Cluster0';
+  const uri = 'mongodb+srv://admin:admin@cluster0.0esjr8o.mongodb.net/?appName=Cluster0';
   console.log('Connecting to MongoDB with URI:', uri);
   try {
     const client = new MongoClient(uri);
